@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react'
+import {connect} from 'react-redux'
 import axios from "axios";
-import API from "../../api";
+import {getSearchResponse} from "../../actions";
+
 function SearchBar() {
-
-
-
+    
     const [searchValue, setSearch] = useState('')
-    const [searchResult, saveSearchResult] = useState([])
-    const handleSearchChange = (e) => {
+    // const [searchResult, saveSearchResult] = useState([])
+    const handleSearchChange =async (e) => {
         const { value } = e.target;
-        setSearch(
+        await setSearch(
             value
-        )
+        );
+        getSearchResponse(value);
+        console.log("HANDLE_SEARCH_CHANGE___CALLED")
     }
 
-    const getSearchResponse = async () => {
-        console.log('SEARCH_VALUE_: ', searchValue)
-        const response = await API.get(`shows?q=${searchValue}`);
-        console.log("RESPONSE_: ", response.data)
-        return saveSearchResult(response.data);
-    }
+    
 
-    useEffect(() => {
-        getSearchResponse();
-    }, [searchValue])
+    // useEffect(() => {
+    //     // console.log("SEARCH_RESPONSE: ",[searchValue,searchResult])
+    // }, [searchValue])
 
     return (
         <div>
@@ -35,4 +32,17 @@ function SearchBar() {
     )
 }
 
-export default SearchBar
+const mapStateToprops = (state) => {
+    return{
+        searchResult: state.searchResult,
+        noResult: state.noResult
+    }
+}
+
+const mapDispatchToProps = (dispatch) =>{
+    return{
+        
+    }
+}
+
+export default connect(mapStateToprops,mapDispatchToProps)(SearchBar)
